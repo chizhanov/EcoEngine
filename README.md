@@ -95,7 +95,6 @@ class TestScene : Scene() {
 
 ## What tasks are relevant?
 
-1. Camera
-2. Gestures
-3. Text rendering
-4. Sprite animation
+1. Gestures
+2. Text rendering
+3. Sprite animation

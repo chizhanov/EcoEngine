@@ -2,7 +2,10 @@ package com.github.chizhanov.ecoengine.scene
 
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.withSave
 import androidx.compose.ui.unit.Constraints
+import com.github.chizhanov.ecoengine.atoms.Size
+import com.github.chizhanov.ecoengine.camera.Camera
 import com.github.chizhanov.ecoengine.component.Component
 
 /**
@@ -10,9 +13,12 @@ import com.github.chizhanov.ecoengine.component.Component
  */
 open class Scene : Component() {
 
+    val camera = Camera()
+
     /** This should update the state of the scene. */
     override fun update(dt: Long) {
         updateTree(dt)
+        camera.update(dt)
     }
 
     override fun updateTree(dt: Long) {
@@ -28,8 +34,12 @@ open class Scene : Component() {
 
     override fun renderTree(canvas: Canvas) {
         if (!isVisible) return
-        for (child in children) {
-            child.renderTree(canvas)
+        canvas.withSave {
+            camera.viewport.apply(canvas)
+            camera.apply(canvas)
+            for (child in children) {
+                child.renderTree(canvas)
+            }
         }
     }
 
@@ -52,6 +62,8 @@ open class Scene : Component() {
      */
     open fun onSizeChange(constraints: Constraints) {
         this.constraints = constraints
+        val size = Size(constraints.maxWidth.toFloat(), constraints.maxHeight.toFloat())
+        camera.handleResize(size)
     }
 
     var isLoaded = false
