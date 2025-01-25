@@ -3,10 +3,14 @@ package com.github.chizhanov.ecoengine.scene
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.withSave
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.unit.Constraints
 import com.github.chizhanov.ecoengine.atoms.Size
 import com.github.chizhanov.ecoengine.camera.Camera
 import com.github.chizhanov.ecoengine.component.Component
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 
 /**
  *
@@ -125,6 +129,28 @@ open class Scene : Component() {
      */
     internal fun refreshWidget() {
         stateListeners.forEach { callback -> callback() }
+    }
+    //endregion
+
+    //region Gesture handlers
+
+    private val _pointerInputHandlers = MutableStateFlow<List<suspend PointerInputScope.() -> Unit>>(emptyList())
+    val pointerInputHandlers: StateFlow<List<suspend PointerInputScope.() -> Unit>> = _pointerInputHandlers
+
+    fun addPointerInputHandler(handler: suspend PointerInputScope.() -> Unit) {
+        _pointerInputHandlers.update {
+            it + handler
+        }
+    }
+
+    fun removePointerInputHandler(handler: suspend PointerInputScope.() -> Unit) {
+        _pointerInputHandlers.update {
+            it - handler
+        }
+    }
+
+    fun clearPointerInputHandlers() {
+        _pointerInputHandlers.value = emptyList()
     }
     //endregion
 }

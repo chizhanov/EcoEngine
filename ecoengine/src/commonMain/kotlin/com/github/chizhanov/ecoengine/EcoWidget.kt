@@ -3,15 +3,20 @@ package com.github.chizhanov.ecoengine
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import com.github.chizhanov.ecoengine.scene.Scene
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun EcoWidget(scene: Scene) {
@@ -28,8 +33,19 @@ fun EcoWidget(scene: Scene) {
         }
     }
 
+    val handlers by scene.pointerInputHandlers.collectAsState()
+
     BoxWithConstraints(
-        Modifier.background(scene.background)
+        Modifier
+            .fillMaxSize()
+            .background(scene.background)
+            .pointerInput(handlers) {
+                coroutineScope {
+                    handlers.forEach { handler ->
+                        launch { handler() }
+                    }
+                }
+            }
     ) {
         LaunchedEffect(constraints) {
             scene.onSizeChange(constraints)

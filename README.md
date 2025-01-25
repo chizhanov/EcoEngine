@@ -57,6 +57,38 @@ with position and size. It can also represent a group of positioned components i
 The base of the PositionComponent is that it has a position, size, scale, angle and anchor which transforms how the
 component is rendered.
 
+### Gestures
+To intercept gestures, you need to add a handler to your scene. 
+Use the addPointerInputHandler, removePointerInputHandler, or clearPointerInputHandlers functions to manage your 
+handlers. 
+Handlers use PointerInputScope, so you can use Compose abstractions.
+
+Here is an example of how to use gestures in your scene:
+```Kotlin
+class TestScene : Scene() {
+
+    init {
+        addPointerInputHandler {
+            detectTapGestures(
+                onTap = { offset ->
+                    println("Tapped at $offset")
+                },
+                onDoubleTap = { offset ->
+                    println("Double tapped at $offset")
+                },
+                onLongPress = { offset ->
+                    println("Long pressed at $offset")
+                },
+                onPress = { offset ->
+                    println("Pressed at $offset")
+                }
+            )
+        }
+    }
+}
+```
+Be careful, as gestures, like in Compose, can conflict with each other.
+
 ## Example
 
 Here is an example of a small scene:
@@ -95,6 +127,5 @@ class TestScene : Scene() {
 
 ## What tasks are relevant?
 
-1. Gestures
-2. Text rendering
-3. Sprite animation
+1. Text rendering
+2. Sprite animation
