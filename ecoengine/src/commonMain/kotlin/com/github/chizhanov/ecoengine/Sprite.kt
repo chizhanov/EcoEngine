@@ -27,17 +27,6 @@ class Sprite(
 
     var paint: Paint = Paint().apply { color = Color.White }
 
-    companion object {
-        suspend fun load(
-            path: String,
-            imageManager: ImageManager? = null
-        ): Sprite {
-            val localImageManager = imageManager ?: EcoEngine.imageManager
-            val image = localImageManager.load(path)
-            return Sprite(image)
-        }
-    }
-
     private val imageWidth: Int
         get() = image.width
 
