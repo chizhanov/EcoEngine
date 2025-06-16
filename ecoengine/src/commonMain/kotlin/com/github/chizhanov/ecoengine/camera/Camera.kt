@@ -44,8 +44,8 @@ class Camera : Projector {
     private val matrix = Matrix()
 
     private fun transformMatrix(): Matrix {
-        val translateX = -position.x * zoom
-        val translateY = -position.y * zoom
+        val translateX = -position.x
+        val translateY = -position.y
         val v = matrix.values
         if (v[Matrix.ScaleX] == zoom &&
             v[Matrix.ScaleY] == zoom &&
